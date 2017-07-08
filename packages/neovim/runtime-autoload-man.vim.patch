@@ -1,0 +1,23 @@
+diff -u -r ../neovim-1b2acb8d958c1c8e2f382c2de9c98586801fd9fe/runtime/autoload/man.vim ./runtime/autoload/man.vim
+--- ../neovim-1b2acb8d958c1c8e2f382c2de9c98586801fd9fe/runtime/autoload/man.vim	2017-06-03 21:00:05.000000000 +0200
++++ ./runtime/autoload/man.vim	2017-06-05 01:15:56.254306768 +0200
+@@ -148,7 +148,7 @@
+   let manwidth = empty($MANWIDTH) ? winwidth(0) : $MANWIDTH
+   " Force MANPAGER=cat to ensure Vim is not recursively invoked (by man-db).
+   " http://comments.gmane.org/gmane.editors.vim.devel/29085
+-  let cmd = ['env', 'MANPAGER=cat', 'MANWIDTH='.manwidth, 'man']
++  let cmd = ['env', 'MANPAGER=cat', 'MANWIDTH='.manwidth, 'mandoc']
+   return s:system(cmd + (s:localfile_arg ? ['-l', a:path] : [a:path]))
+ endfunction
+ 
+@@ -213,7 +213,9 @@
+ 
+ function! s:get_path(sect, name) abort
+   if empty(a:sect)
+-    return s:system(['man', s:find_arg, a:name])
++    " Take the first one if multiple lines returned, such as when
++    " both man1p/test.1p and man1/test.1 exists.
++    return split(s:system(['man', s:find_arg, a:name]), "\n")[0] . "\n"
+   endif
+   " '-s' flag handles:
+   "   - tokens like 'printf(echo)'

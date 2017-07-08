@@ -1,0 +1,57 @@
+#!/bin/bash
+
+if [ $# != 0 ]; then
+	echo "termux-chroot: Setup a chroot to mimic a normal Linux file system"
+	echo ""
+	echo "Execute without arguments to run a chroot with traditional file system"
+	echo "hierarchy (having e.g. the folders /bin, /etc and /usr) within Termux."
+	exit
+fi
+
+# For the /system/bin/linker(64) to be found:
+ARGS="-b /system:/system"
+
+# On some devices /vendor is required for termux packages to work correctly
+# See https://github.com/termux/proot/issues/2#issuecomment-303995382
+ARGS="$ARGS -b /vendor:/vendor"
+
+# Bind /data to include system folders such as /data/misc. Also $PREFIX
+# and $HOME so that Termux programs with hard-coded paths continue to work:
+ARGS="$ARGS -b /data:/data"
+
+# Used by getprop (see https://github.com/termux/termux-packages/issues/1076):
+ARGS="$ARGS -b /property_contexts:/property_contexts"
+
+# Expose external and internal storage:
+if [ -d /storage ]; then
+	ARGS="$ARGS -b /storage:/storage"
+fi
+
+# Mimic traditional Linux file system hierarchy - /usr:
+ARGS="$ARGS -b $PREFIX:/usr"
+
+# Mimic traditional Linux file system hierarchy - other Termux dirs:
+for f in bin etc lib share tmp var; do
+	ARGS="$ARGS -b $PREFIX/$f:/$f"
+done
+
+# Mimic traditional Linux file system hierarchy- system dirs:
+for f in dev proc; do
+	ARGS="$ARGS -b /$f:/$f"
+done
+
+# Set /home as current directory:
+ARGS="$ARGS --cwd=/home"
+
+# Root of the file system:
+ARGS="$ARGS -r $PREFIX/.."
+
+# Program to execute:
+PROGRAM=/bin/bash
+if [ -x $HOME/.termux/shell ]; then
+	PROGRAM=`readlink -f $HOME/.termux/shell`
+fi
+ARGS="$ARGS $PROGRAM -l"
+
+export HOME=/home
+$PREFIX/bin/proot $ARGS

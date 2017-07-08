@@ -1,0 +1,12 @@
+diff -u -r ../libcutils_orig/fs.c ./fs.c
+--- ../libcutils_orig/fs.c	2017-07-07 20:41:51.206998554 -0700
++++ ./fs.c	2017-07-07 19:37:07.000000000 -0700
+@@ -79,7 +79,7 @@
+ create:
+     create_result = prepare_as_dir
+         ? TEMP_FAILURE_RETRY(mkdir(path, mode))
+-        : TEMP_FAILURE_RETRY(open(path, O_CREAT | O_CLOEXEC | O_NOFOLLOW | O_RDONLY));
++        : TEMP_FAILURE_RETRY(open(path, O_CREAT | O_CLOEXEC | O_NOFOLLOW | O_RDONLY, 0755));
+     if (create_result == -1) {
+         if (errno != EEXIST) {
+             ALOGE("Failed to %s(%s): %s",

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+objdump -p $@ | grep NEEDED | cut -d ' ' -f 18

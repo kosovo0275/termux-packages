@@ -1,0 +1,27 @@
+diff -u -r ../system_core_include_orig/cutils/properties.h ./cutils/properties.h
+--- ../system_core_include_orig/cutils/properties.h	2017-07-07 20:42:11.026998547 -0700
++++ ./cutils/properties.h	2017-07-07 19:37:57.000000000 -0700
+@@ -109,23 +109,6 @@
+     
+ int property_list(void (*propfn)(const char *key, const char *value, void *cookie), void *cookie);    
+ 
+-#if defined(__BIONIC_FORTIFY)
+-
+-extern int __property_get_real(const char *, char *, const char *)
+-    __asm__(__USER_LABEL_PREFIX__ "property_get");
+-__errordecl(__property_get_too_small_error, "property_get() called with too small of a buffer");
+-
+-__BIONIC_FORTIFY_INLINE
+-int property_get(const char *key, char *value, const char *default_value) {
+-    size_t bos = __bos(value);
+-    if (bos < PROPERTY_VALUE_MAX) {
+-        __property_get_too_small_error();
+-    }
+-    return __property_get_real(key, value, default_value);
+-}
+-
+-#endif
+-
+ #ifdef __cplusplus
+ }
+ #endif

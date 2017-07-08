@@ -1,0 +1,25 @@
+Bionic lacks strverscmp as well.
+
+diff -u -r ../procps-ng-3.3.12/Makefile.in ./Makefile.in
+--- ../procps-ng-3.3.12/Makefile.in	2016-07-10 01:32:11.170237828 -0400
++++ ./Makefile.in	2016-08-14 18:07:17.324636393 -0400
+@@ -112,7 +112,7 @@
+ @WITH_NCURSES_TRUE@	watch.1 \
+ @WITH_NCURSES_TRUE@	top/top.1
+ 
+-@CYGWIN_TRUE@@WITH_NCURSES_TRUE@am__append_10 = lib/strverscmp.c
++@WITH_NCURSES_TRUE@am__append_10 = lib/strverscmp.c
+ @BUILD_SKILL_TRUE@am__append_11 = \
+ @BUILD_SKILL_TRUE@	skill \
+ @BUILD_SKILL_TRUE@	snice
+@@ -308,8 +308,8 @@
+ tload_DEPENDENCIES = ./proc/libprocps.la $(am__DEPENDENCIES_2)
+ am__top_top_SOURCES_DIST = top/top.h top/top.c top/top_nls.h \
+ 	top/top_nls.c lib/fileutils.c lib/strverscmp.c
+-@CYGWIN_TRUE@@WITH_NCURSES_TRUE@am__objects_1 =  \
+-@CYGWIN_TRUE@@WITH_NCURSES_TRUE@	lib/strverscmp.$(OBJEXT)
++@WITH_NCURSES_TRUE@am__objects_1 =  \
++@WITH_NCURSES_TRUE@	lib/strverscmp.$(OBJEXT)
+ @WITH_NCURSES_TRUE@am_top_top_OBJECTS = top/top.$(OBJEXT) \
+ @WITH_NCURSES_TRUE@	top/top_nls.$(OBJEXT) \
+ @WITH_NCURSES_TRUE@	lib/fileutils.$(OBJEXT) $(am__objects_1)
